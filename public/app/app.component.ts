@@ -1,17 +1,12 @@
 import { Component } from '@angular/core';
-import { ROUTER_DIRECTIVES, Routes, Router } from '@angular/router';
 
-import { ChatComponent } from './default/default.ts';
+import { DefaultPageComponent } from './default/default';
 
 @Component({
     selector: 'app-component',
-    template: `
-    `
+    template: `<default></default>`,
+    directives: [DefaultPageComponent]
 })
-
-
 export class AppComponent {
-    constructor() {
-
-    }
+    constructor() { }
 }

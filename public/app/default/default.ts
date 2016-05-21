@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HTTP_PROVIDERS } from '@angular/http';
 
 import { ChatService } from './chat.service';
 
@@ -7,7 +8,7 @@ declare var io: any;
 @Component({
     selector: 'default',
     templateUrl: 'app/default/default.html',
-    providers: [ ChatService ]
+    providers: [ ChatService, HTTP_PROVIDERS ]
 })
 export class DefaultPageComponent implements OnInit {
     messages: Array<String>;
@@ -20,40 +21,36 @@ export class DefaultPageComponent implements OnInit {
 
     ngOnInit () {
         this.fetchMessages()
-            .subscribe(this.onMessagesFetchedSuccess,
+            .subscribe((success) => {
+                let data = success.json();
+                
+                let dataLen = data.length,
+                    i;
+
+                for(i = 0; i < dataLen; i++) {
+                    this.messages.push(data[i].message);
+                }
+            },
             this.onMessagesFetchedError);
 
         this.clearChatBox();
         this.socket = io();
-        this.socket.on("chat_message", this.onMessageReceived);
+        this.socket.on("chat_message", (msg) => {
+            this.messages.push(msg.message);
+        });
     }
 
     fetchMessages () {
         return this.chatService.fetchMessages();
     }
 
-    onMessagesFetchedSuccess (data): void {
-        data = data.json();
-
-        let dataLen = data.length,
-            i;
-
-        for(i = 0; i < dataLen; i++) {
-            this.messages.push(data[i].message);
-        }
-    }
-
     onMessagesFetchedError (error): void {
         console.log(JSON.stringify(error));
     }
 
-    onMessageReceived (msg): void  {
-        this.messages.push(msg);
-    }
-
     sendMessage (msg) {
-        this.socket.emit("chat_message", msg);
-        this.chatBox = "";
+        this.socket.emit("chat_message", { message: msg });
+        this.clearChatBox();
     }
 
     clearChatBox () {
