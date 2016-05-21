@@ -1,14 +1,12 @@
-import { Component } from '@angular/core';
-import { bootstrap }    from '@angular/platform-browser-dynamic';
+import { ROUTER_PROVIDERS } from '@angular/router';
+import { bootstrap } from '@angular/platform-browser-dynamic';
 
-import { AppComponent }    from './app.component';
+import { AppComponent } from './app.component';
 
-@Component({
-    selector: 'my-app',
-    template: `<app-component>Loading ...</app-component>`,
-    directives: [AppComponent]
-})
-export class MyApp {
-}
-
-bootstrap(MyApp);
+bootstrap(AppComponent, [
+    ROUTER_PROVIDERS
+])
+.then(
+    success => console.log('AppComponent bootstrapped!'),
+    error => console.error(error)
+);
