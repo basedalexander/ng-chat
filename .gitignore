@@ -1,5 +1,7 @@
 node_modules
 .idea
 
-public/**/**.js
-public/**/**.map.js
+public/**/*.js
+public/**/*.js.map
+
+!public/systemjs.config.js

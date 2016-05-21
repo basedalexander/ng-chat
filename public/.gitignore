@@ -1,4 +1,0 @@
-public/**/*.js
-public/**/*.map.js
-
-!systemjs.config.js
