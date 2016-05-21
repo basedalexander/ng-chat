@@ -5,7 +5,7 @@ import { DefaultPageComponent } from './default/default';
 @Component({
     selector: 'app-component',
     template: `<default></default>`,
-    directives: [DefaultPageComponent]
+    directives: [ DefaultPageComponent ]
 })
 export class AppComponent {
     constructor() { }
