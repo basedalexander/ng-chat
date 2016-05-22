@@ -9,6 +9,7 @@ var appRouter = function (app) {
             if(error) {
                 return res.status(400).send(error);
             }
+            
             return res.send(messages);
         });
     })

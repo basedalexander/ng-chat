@@ -20,24 +20,24 @@ export class DefaultPageComponent implements OnInit {
     }
 
     ngOnInit () {
-        this.fetchMessages()
-            .subscribe((success) => {
-                let data = success.json();
-                
-                let dataLen = data.length,
-                    i;
-
-                for(i = 0; i < dataLen; i++) {
-                    this.messages.push(data[i].message);
-                }
-            },
-            this.onMessagesFetchedError);
-
+        this.getMessages();
         this.clearChatBox();
         this.socket = io();
         this.socket.on("chat_message", (msg) => {
             this.messages.push(msg.message);
         });
+    }
+    
+    getMessages() {
+        this.fetchMessages()
+            .subscribe(
+                messages => {
+                    messages.forEach(message =>  {
+                        this.messages.push(message.message);
+                    });
+                },
+                this.onMessagesFetchedError
+            );
     }
 
     fetchMessages () {
@@ -45,7 +45,7 @@ export class DefaultPageComponent implements OnInit {
     }
 
     onMessagesFetchedError (error): void {
-        console.log(JSON.stringify(error));
+        console.log(error);
     }
 
     sendMessage (msg) {
