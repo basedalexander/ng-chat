@@ -1,9 +1,25 @@
 var express = require('express');
 var path = require('path');
 var app = express();
-var mongoose = require('mongoose');
 var config = require('./config');
-var Message = require('./models/message-model');
+var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
+
+
+
+var dbConnection = mongoose.createConnection(config.MONGO_URI + config.MONGO_COLLECTION);
+autoIncrement.initialize(dbConnection);
+
+var userSchema = require('./models/user-schema');
+
+userSchema.plugin(autoIncrement.plugin, {
+    model: 'User',
+    field: 'user_id',
+    startAt: 1,
+    incrementBy: 1
+});
+
+var User = dbConnection.model('User', userSchema);
 
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
@@ -23,8 +39,7 @@ io.on('connection', function (socket) {
     });
 });
 
-mongoose.connect(config.MONGO_URI + config.MONGO_COLLECTION);
-mongoose.connection.on('error', function(err) {
+dbConnection.on('error', function(err) {
     console.log('Error: Could not connect to MongoDB. Did you forget to run `mongod`?'.red);
 });
 

@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Message = require('../models/message-model');
+var Message = require('../models/message-schema');
 
 var appRouter = function (app) {
     app.get('/fetch', function (req, res) {
