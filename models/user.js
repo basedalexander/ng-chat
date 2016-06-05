@@ -1,20 +1,16 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var autoIncrement = require('mongoose-auto-increment');
 
 var userSchema = mongoose.Schema({
-    user_id: Number,
-    message: String,
     username: {
         type: String,
         required: true,
-        // unique: true
+        unique: true
     },
     password: {
         type: String,
-        required: true,
-        // unique: true
+        required: true
     },
     created_at: Date,
     updated_at: Date
@@ -32,4 +28,4 @@ userSchema.pre('save', function (next) {
     next();
 });
 
-module.exports = userSchema;
+module.exports = mongoose.model('User', userSchema);

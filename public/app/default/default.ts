@@ -23,12 +23,13 @@ export class DefaultPageComponent implements OnInit {
         this.getMessages();
         this.clearChatBox();
         this.socket = io();
+
         this.socket.on("chat_message", (msg) => {
             this.messages.push(msg.message);
         });
     }
     
-    getMessages() {
+    private getMessages() {
         this.fetchMessages()
             .subscribe(
                 messages => {
@@ -40,20 +41,20 @@ export class DefaultPageComponent implements OnInit {
             );
     }
 
-    fetchMessages () {
+    private fetchMessages () {
         return this.chatService.fetchMessages();
     }
 
-    onMessagesFetchedError (error): void {
+    private onMessagesFetchedError (error): void {
         console.log(error);
     }
 
-    sendMessage (msg) {
+    private sendMessage (msg): void {
         this.socket.emit("chat_message", { message: msg });
         this.clearChatBox();
     }
 
-    clearChatBox () {
+    private clearChatBox (): void {
         this.chatBox = "";
     }
 }

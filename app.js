@@ -3,23 +3,9 @@ var path = require('path');
 var app = express();
 var config = require('./config');
 var mongoose = require('mongoose');
-var autoIncrement = require('mongoose-auto-increment');
 
-
-
-var dbConnection = mongoose.createConnection(config.MONGO_URI + config.MONGO_COLLECTION);
-autoIncrement.initialize(dbConnection);
-
-var userSchema = require('./models/user-schema');
-
-userSchema.plugin(autoIncrement.plugin, {
-    model: 'User',
-    field: 'user_id',
-    startAt: 1,
-    incrementBy: 1
-});
-
-var User = dbConnection.model('User', userSchema);
+var User = require('./models/user');
+var Message = require('./models/message');
 
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
@@ -30,16 +16,39 @@ app.use("/scripts", express.static(__dirname + "/node_modules/"));
 var routes = require('./routes/routes.js')(app);
 
 io.on('connection', function (socket) {
+    
+    socket.on('register', function (credentials) {
+        User.find({
+            username: credentials.username
+        },function (err, user) {
+            if (user === null) {
+                var newUser = new User({
+                    username: credentials.username,
+                    password: credentials.password
+                });
+
+                newUser.save(function (err) {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+            }
+        });
+    });
+
     socket.on('chat_message', function (msg) {
         var newMessage = new Message(msg);
+
         newMessage.save(function (err) {
             if (err) { return console.error(err.message); }
             io.emit("chat_message", msg);
         });
     });
+
 });
 
-dbConnection.on('error', function(err) {
+mongoose.connect(config.MONGO_URI + config.MONGO_COLLECTION);
+mongoose.connection.on('error', function(err) {
     console.log('Error: Could not connect to MongoDB. Did you forget to run `mongod`?'.red);
 });
 
