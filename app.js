@@ -16,26 +16,6 @@ app.use("/scripts", express.static(__dirname + "/node_modules/"));
 var routes = require('./routes/routes.js')(app);
 
 io.on('connection', function (socket) {
-    
-    socket.on('register', function (credentials) {
-        User.find({
-            username: credentials.username
-        },function (err, user) {
-            if (user === null) {
-                var newUser = new User({
-                    username: credentials.username,
-                    password: credentials.password
-                });
-
-                newUser.save(function (err) {
-                    if (err) {
-                        console.error(err);
-                    }
-                });
-            }
-        });
-    });
-
     socket.on('chat_message', function (msg) {
         var newMessage = new Message(msg);
 

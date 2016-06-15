@@ -2,8 +2,7 @@
 
 var mongoose = require('mongoose');
 
-var messageSchema = mongoose.Schema({
-    author_id: Number,
+var messageSchema = new mongoose.Schema({
     message: String,
     created_at: Date
 });
@@ -14,6 +13,8 @@ messageSchema.pre('save', function (next) {
     if (!this.created_at) {
         this.created_at = currentDate;
     }
+
+    next();
 });
 
 module.exports = mongoose.model('Message', messageSchema);
