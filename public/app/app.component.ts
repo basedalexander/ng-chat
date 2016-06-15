@@ -8,5 +8,4 @@ import { DefaultPageComponent } from './default/default';
     directives: [ DefaultPageComponent ]
 })
 export class AppComponent {
-    constructor() { }
 }

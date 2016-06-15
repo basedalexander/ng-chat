@@ -1,25 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HTTP_PROVIDERS } from '@angular/http';
 
 import { ChatService } from './chat.service';
-
 declare var io: any;
 
 @Component({
     selector: 'default',
-    templateUrl: 'app/default/default.html',
+    template: `
+    <ul id="messages">
+        <li *ngFor="let message of messages">{{message}}</li>
+    </ul>
+    <form action="">
+        <input #chatbox autocomplete="off" type="text" (keyup)="0"/>
+        
+        <button (click)="sendMessage(chatbox.value)">Send</button>
+    </form>
+    `,
     providers: [ ChatService, HTTP_PROVIDERS ]
 })
-export class DefaultPageComponent implements OnInit {
+export class DefaultPageComponent {
     messages: Array<String>;
     chatBox: String;
     socket: any;
-    
+
     constructor( private chatService: ChatService) {
         this.messages = [];
     }
 
-    ngOnInit () {
+    private init(): void {
         this.getMessages();
         this.clearChatBox();
         this.socket = io();
@@ -28,7 +36,7 @@ export class DefaultPageComponent implements OnInit {
             this.messages.push(msg.message);
         });
     }
-    
+
     private getMessages() {
         this.fetchMessages()
             .subscribe(
