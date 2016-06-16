@@ -4,4 +4,6 @@ node_modules
 public/**/*.js
 public/**/*.js.map
 
+public/typings
+
 !public/systemjs.config.js

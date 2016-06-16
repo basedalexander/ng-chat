@@ -1,24 +1,60 @@
 import {Component, OnInit} from '@angular/core';
 import { HTTP_PROVIDERS } from '@angular/http';
 
+import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
+
+
 import { ChatService } from './chat.service';
+
 declare var io: any;
 
 @Component({
     selector: 'default',
     template: `
-    <ul id="messages">
-        <li *ngFor="let message of messages">{{message}}</li>
-    </ul>
-    <form action="">
-        <input #chatbox [(ngModel)]='chatBox' autocomplete="off" type="text" (keyup)="0"/>
+    <alert type="info">ng2-bootstrap hello world!</alert>
+    <div class="main">
+        <ul id="messages">
+            <li *ngFor="let message of messages">[{{message.created_at}}] {{message.message}} </li>
+        </ul>
+    </div>
+    
+    <div class="sidebar">
         
-        <button (click)="sendMessage(chatbox.value)">Send</button>
-    </form>
+    </div>
+    
+    <div class="chatbox">
+        <form action="">
+            <input #chatbox
+                [(ngModel)]='chatBox'
+                autocomplete="off"
+                type="text"/>
+            
+            <button (click)="sendMessage(chatbox.value)">Send</button>
+        </form>
+    </div>
+
     `,
-    providers: [ ChatService, HTTP_PROVIDERS ]
+    styles: [`
+    .main {
+        float: left;
+        width: 80%;
+    }
+    
+    .sidebar {
+        float: right;
+        width: 20%;
+        height: 300px;
+        border: 2px solid dodgerblue;
+    }
+        
+    .chatbox {
+        clear: both;
+    }
+    `],
+    providers: [ ChatService, HTTP_PROVIDERS ],
+    directives: [AlertComponent]
 })
-export class DefaultPageComponent implements OnInit {
+export class DefaultPageComponent {
     messages: Array<String>;
     chatBox: String;
     socket: any;
@@ -27,34 +63,31 @@ export class DefaultPageComponent implements OnInit {
         this.messages = [];
     }
 
-    ngOnInit(): void {
-        this.init();
-    }
-
     private init(): void {
         this.getMessages();
         this.clearChatBox();
 
         this.socket = io();
-        this.socket.on("chat_message", (msg) => {
-            this.messages.push(msg.message);
+        this.socket.on("chat_message", (message) => {
+            this.appendMessage(message);
         });
     }
 
     private getMessages() {
         this.fetchMessages()
-            .subscribe(
-                messages => {
+            .subscribe(messages => {
                     messages.forEach(message =>  {
-                        this.messages.push(message.message);
+                        this.appendMessage(message);
                     });
                 },
                 this.onMessagesFetchedError
             );
     }
-
     private fetchMessages () {
         return this.chatService.fetchMessages();
+    }
+    private appendMessage(message: any) {
+        this.messages.push(message);
     }
 
     private onMessagesFetchedError (error): void {

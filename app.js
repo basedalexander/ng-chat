@@ -21,7 +21,17 @@ io.on('connection', function (socket) {
 
         newMessage.save(function (err) {
             if (err) { return console.error(err.message); }
-            io.emit("chat_message", msg);
+
+            Message.find({
+                message: msg.message
+            }, function (err, messages) {
+                
+                if (err) {
+                    return console.error(err.message);
+                }
+
+                io.emit("chat_message", messages[0]);
+            });
         });
     });
 

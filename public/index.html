@@ -12,7 +12,8 @@
             #messages li { padding: 5px 10px; }
             #messages li:nth-child(odd) { background: #eee; }
         </style>
-        
+
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
         <!-- Polyfill(s) for older browsers -->
         <script src="node_modules/es6-shim/es6-shim.min.js"></script>
 
@@ -21,9 +22,12 @@
         <script src="node_modules/systemjs/dist/system.src.js"></script>
 
         <script src="systemjs.config.js"></script>
+
         <script>
             System.import('app').catch(function (err) { console.error(err); });
         </script>
+        <script src="node_modules/ng2-bootstrap/bundles/ng2-bootstrap.min.js"></script>
+
     </head>
     <body>
         <app-component>Loading ...</app-component>
