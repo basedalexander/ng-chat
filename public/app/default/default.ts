@@ -1,17 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import { Component } from '@angular/core';
 import { HTTP_PROVIDERS } from '@angular/http';
 
-import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
-
+import { UserCredentialsType } from './modal/modal.component';
 
 import { ChatService } from './chat.service';
+
+import { ModalComponent } from './modal/modal.component';
 
 declare var io: any;
 
 @Component({
     selector: 'default',
     template: `
-    <alert type="info">ng2-bootstrap hello world!</alert>
+    <modal-demo (submitted)="onSubmitted($event)"></modal-demo>
     <div class="main">
         <ul id="messages">
             <li *ngFor="let message of messages">[{{message.created_at}}] {{message.message}} </li>
@@ -52,7 +53,7 @@ declare var io: any;
     }
     `],
     providers: [ ChatService, HTTP_PROVIDERS ],
-    directives: [AlertComponent]
+    directives: [ModalComponent]
 })
 export class DefaultPageComponent {
     messages: Array<String>;
@@ -101,5 +102,10 @@ export class DefaultPageComponent {
 
     private clearChatBox (): void {
         this.chatBox = "";
+    }
+
+    private onSubmitted(event: UserCredentialsType): void {
+        console.log(`brat submitted the form ${event.email} ${event.password}`);
+        this.init();
     }
 }
